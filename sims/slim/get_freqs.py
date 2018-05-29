@@ -138,11 +138,12 @@ def write_info(chrom):
     all_inds = [individuals[j] for j in allpops]
     # write out pop info
     logfile.write("Saving population info to" + args.popfile[chrom] + "\n")
-    pop_out.write("\t".join(["pop", "x", "y", "num_genomes"]) + "\n")
+    pop_out.write("\t".join(["pop", "x", "y", "num_individuals"]) + "\n")
     for k, (x, y) in enumerate(pop_locs):
         pop_out.write("\t".join(map(str,[k, x, y, len(pops[k])])) + "\n")
     pop_out.close()
     # write out indivdual info
+    # whoops - this doesn't actually write out 'pop' info, we use fact that it goes in order by pop, though
     logfile.write("Saving individual info to" + args.indivfile[chrom] + "\n")
     indiv_out.write("\t".join(header) + "\n");
     for k, ind in enumerate(all_inds):
@@ -165,7 +166,7 @@ def write_info(chrom):
             n += 1
     ## just so we can simplify
     sts = sts.simplify(allnodes)
-    freq_out.write("\t".join(['pop_' + str(j) for _ in pops]) + "\n")
+    freq_out.write("\t".join(['pop_' + str(j) for j, _ in enumerate(pops)]) + "\n")
     for var in sts.variants():
         freqs = [sum(var.genotypes[nodes])/len(nodes) for nodes in sub_pop_nodes]
         freq_out.write("\t".join(map(str, freqs)) + "\n")

@@ -47,7 +47,7 @@ reproduction() {
 
     habitat = rep(1.0, 25);
 	p1.defineSpatialMap("habitat", "xy", c(5, 5), habitat, interpolate=T,
-		valueRange=c(0.0, 2.0), colors=c("black", "blue"));
+		valueRange=c(0.0, 1.0), colors=c("black", "blue"));
 
     // header info
     catn("generation" + " " + "individualCount" + " " + "time");
@@ -58,7 +58,7 @@ early() {
     inds = p1.individuals;
     for (ind in inds) {
         competition = i1.totalOfNeighborStrengths(ind);
-        quality = p1.spatialMapValue("habitat", ind.spatialPosition);
+        quality = max(0.0, p1.spatialMapValue("habitat", ind.spatialPosition));
         ind.fitnessScaling = 2 / (1 + (L + 1) / (L - 1) * (competition / (quality * K * 2 * PI * S^2)));
     }
 }
@@ -73,15 +73,15 @@ early() {
 }
 
 40000 early() {
-    habitat = c(rep(0.1, 10), 2.0, rep(0.1, 3), 2.0, rep(0.1, 10));
+    habitat = c(rep(c(1.0, 1.0, 0.0, 1.0, 1.0), 2), rep(0.0, 5), rep(c(1.0, 1.0, 0.0, 1.0, 1.0), 2));
 	p1.defineSpatialMap("habitat", "xy", c(5, 5), habitat, interpolate=T,
-		valueRange=c(0.0, 2.0), colors=c("black", "blue"));
+		valueRange=c(0.0, 1.0), colors=c("black", "blue"));
 }
 
 60000 early() {
     habitat = c(rep(1.0, 25));
 	p1.defineSpatialMap("habitat", "xy", c(5, 5), habitat, interpolate=T,
-		valueRange=c(0.0, 2.0), colors=c("black", "blue"));
+		valueRange=c(0.0, 1.0), colors=c("black", "blue"));
 }
 
 60100 late() {

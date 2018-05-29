@@ -10,7 +10,7 @@ initialize() {
     defineConstant("K", 100);  // carrying-capacity per unit square
     defineConstant("S", 0.1);  // sigma_S, the spatial interaction and dispersal distance
     defineConstant("L", 4);    // mean lifetime at stationarity
-    defineConstant("W", 8.0);  // width and height of the simulated area
+    defineConstant("W", 0.5);  // width and height of the simulated area
 
     initializeMutationType("m1", 0.5, "g", -0.005, 2);
     initializeGenomicElementType("g1", m1, 1.0);
@@ -38,7 +38,7 @@ reproduction() {
 }
 
 1 early() {
-    sim.addSubpop("p1", 5000);
+    sim.addSubpop("p1", 100);
     p1.setSpatialBounds(c(0, 0, W, W));
     // random initial positions
     for (ind in p1.individuals)
@@ -58,7 +58,7 @@ early() {
     inds = p1.individuals;
     for (ind in inds) {
         competition = i1.totalOfNeighborStrengths(ind);
-        quality = p1.spatialMapValue("habitat", ind.spatialPosition);
+        quality = max(0.0, p1.spatialMapValue("habitat", ind.spatialPosition));
         ind.fitnessScaling = 2 / (1 + (L + 1) / (L - 1) * (competition / (quality * K * 2 * PI * S^2)));
     }
 }
@@ -72,19 +72,19 @@ early() {
     }
 }
 
-40000 early() {
-    habitat = c(rep(0.1, 10), 2.0, rep(0.1, 3), 2.0, rep(0.1, 10));
+4000 early() {
+    habitat = c(rep(0.1, 10), 2.0, rep(0.0, 3), 2.0, rep(0, 10));
 	p1.defineSpatialMap("habitat", "xy", c(5, 5), habitat, interpolate=T,
 		valueRange=c(0.0, 2.0), colors=c("black", "blue"));
 }
 
-60000 early() {
-    habitat = c(rep(1.0, 25));
+6000 early() {
+    habitat = c(rep(1.1, 25));
 	p1.defineSpatialMap("habitat", "xy", c(5, 5), habitat, interpolate=T,
 		valueRange=c(0.0, 2.0), colors=c("black", "blue"));
 }
 
-60100 late() {
+10000 late() {
     sim.treeSeqOutput(OUTFILE, simplify=T);
 }
 
