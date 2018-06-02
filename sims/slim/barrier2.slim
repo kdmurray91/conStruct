@@ -7,8 +7,8 @@ initialize() {
     createDirectory(OUTDIR);
     defineConstant("OUTFILE", paste(c(OUTDIR, "results.trees"), sep="/"));
 
-    defineConstant("K", 100);  // carrying-capacity per unit square
-    defineConstant("S", 0.1);  // sigma_S, the spatial interaction and dispersal distance
+    defineConstant("K", 400);  // carrying-capacity per unit square
+    defineConstant("S", 0.15);  // sigma_S, the spatial interaction and dispersal distance
     defineConstant("L", 4);    // mean lifetime at stationarity
     defineConstant("W", 8.0);  // width and height of the simulated area
 
@@ -28,7 +28,7 @@ reproduction() {
     // choose our nearest neighbor as a mate, within the max distance
     mate = i1.nearestNeighbors(individual, 1);
     if (mate.size()) {
-        for (i in seqLen(rpois(1, 1/L))) {
+        for (i in seqLen(rpois(1, 2/L))) {
             offspring = subpop.addCrossed(individual, mate);
             pos = individual.spatialPosition + rnorm(2, 0, S);
             offspring.setSpatialPosition(p1.pointReflected(pos));
@@ -45,8 +45,8 @@ reproduction() {
         ind.setSpatialPosition(p1.pointUniform());
     i1.evaluate();
 
-    habitat = rep(1.0, 25);
-	p1.defineSpatialMap("habitat", "xy", c(5, 5), habitat, interpolate=T,
+    habitat = rep(1.0, 4);
+	p1.defineSpatialMap("habitat", "xy", c(2, 2), habitat, interpolate=F,
 		valueRange=c(0.0, 1.0), colors=c("black", "blue"));
 
     // header info
@@ -58,8 +58,8 @@ early() {
     inds = p1.individuals;
     for (ind in inds) {
         competition = i1.totalOfNeighborStrengths(ind);
-        quality = max(0.0, p1.spatialMapValue("habitat", ind.spatialPosition));
-        ind.fitnessScaling = 2 / (1 + (L + 1) / (L - 1) * (competition / (quality * K * 2 * PI * S^2)));
+        quality = p1.spatialMapValue("habitat", ind.spatialPosition);
+        ind.fitnessScaling = 1 / (1 + ((competition + 5) / (quality * K * PI * S^2 * (L-1))));
     }
 }
 
@@ -73,14 +73,14 @@ early() {
 }
 
 40000 early() {
-    habitat = c(rep(c(1.0, 1.0, 0.0, 1.0, 1.0), 2), rep(0.0, 5), rep(c(1.0, 1.0, 0.0, 1.0, 1.0), 2));
-	p1.defineSpatialMap("habitat", "xy", c(5, 5), habitat, interpolate=T,
+    habitat = c(rep(c(1.0, 1.0, 0.0, 0.0, 1.0, 1.0), 2), rep(0.0, 12), rep(c(1.0, 1.0, 0.0, 0.0, 1.0, 1.0), 2));
+	p1.defineSpatialMap("habitat", "xy", c(6, 6), habitat, interpolate=T,
 		valueRange=c(0.0, 1.0), colors=c("black", "blue"));
 }
 
 60000 early() {
-    habitat = c(rep(1.0, 25));
-	p1.defineSpatialMap("habitat", "xy", c(5, 5), habitat, interpolate=T,
+    habitat = rep(1.0, 4);
+	p1.defineSpatialMap("habitat", "xy", c(2, 2), habitat, interpolate=F,
 		valueRange=c(0.0, 1.0), colors=c("black", "blue"));
 }
 

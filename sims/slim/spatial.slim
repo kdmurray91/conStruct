@@ -7,8 +7,8 @@ initialize() {
     createDirectory(OUTDIR);
     defineConstant("OUTFILE", paste(c(OUTDIR, "results.trees"), sep="/"));
 
-    defineConstant("K", 100);  // carrying-capacity per unit square
-    defineConstant("S", 0.1);  // sigma_S, the spatial interaction and dispersal distance
+    defineConstant("K", 400);  // carrying-capacity per unit square
+    defineConstant("S", 0.15);  // sigma_S, the spatial interaction and dispersal distance
     defineConstant("L", 4);    // mean lifetime at stationarity
     defineConstant("W", 8.0);  // width and height of the simulated area
 
@@ -28,7 +28,7 @@ reproduction() {
     // choose our nearest neighbor as a mate, within the max distance
     mate = i1.nearestNeighbors(individual, 1);
     if (mate.size()) {
-        for (i in seqLen(rpois(1, 1/L))) {
+        for (i in seqLen(rpois(1, 2/L))) {
             offspring = subpop.addCrossed(individual, mate);
             pos = individual.spatialPosition + rnorm(2, 0, S);
             offspring.setSpatialPosition(p1.pointReflected(pos));
@@ -53,7 +53,7 @@ early() {
     i1.evaluate(p1);
     inds = p1.individuals;
     competition = i1.totalOfNeighborStrengths(inds);
-    inds.fitnessScaling = 2 / (1 + (L + 1) / (L - 1) * (competition / (K * 2 * PI * S^2)));
+    inds.fitnessScaling = 1 / (1 + ((competition + 5) / (K * PI * S^2 * (L-1))));
 }
 
 1: late() {
