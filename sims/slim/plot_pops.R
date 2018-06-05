@@ -4,7 +4,7 @@ usage <- "
     ./plot_pops.R (directory with .indiv.tsvs and .pop.tsv file in)
 "
 
-args <- commandArgs(TRUE)
+args <- if (interactive()) { scan(what='') } else { commandArgs(TRUE) }
 if (length(args) != 1) {
     stop(usage)
 }
@@ -15,7 +15,7 @@ outfile <- file.path(basedir, "pop_locations.pdf")
 # use fact that pops are written out in order to individual file
 indivs <- read.table(file.path(basedir, "results.indiv.tsv"), header=TRUE)
 pops <- read.table(file.path(basedir, "results.pop.tsv"), header=TRUE)
-indivs$pop <- rep(pops$pop, pops$num_genomes)
+indivs$pop <- rep(pops$pop, pops$num_individuals)
 
 pop_cols <- rainbow(1.5*nrow(pops))[1:nrow(pops)]
 names(pop_cols) <- pops$pop
