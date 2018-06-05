@@ -1,7 +1,7 @@
 
 ## For plotting the actual crossvalidation log-likelihoods
 
-plot.sim.xvals <- function (dir, label) {
+plot.sim.xvals <- function (dir, label, Kzoom=2) {
     if (missing(label)) { label <- dir }
     lnl.files <- list.files(dir, ".*.lnl.Robj", full.names=TRUE)
     n.reps <- length(lnl.files)
@@ -14,10 +14,10 @@ plot.sim.xvals <- function (dir, label) {
 	plot.xval.CIs(xval.CIs, K, jitter=0.1)
 		legend(x="bottomright", pch=19, col=c("blue", "green"), legend=c("spatial", "nonspatial"))
 	mtext("Predictive accuracy", side=2, padj=-5)
-	plot.xval.CIs(xval.CIs, K, ylim=range(xval.CIs$sp.means[2:K]))
+	plot.xval.CIs(xval.CIs, K, ylim=range(xval.CIs$sp.means[Kzoom:K]))
 		legend(x="bottomleft", pch=c(19, NA), lty=c(NA, 1), lwd=c(NA, 2), col=c(1, adjustcolor(1, 0.8)), legend=c("mean", "95% CI"))
 	mtext("number of layers", side=1, adj=-0.85, padj=4)
-	mtext(bquote(paste("Cross-validation results", label)), side=3, adj=9.25, padj=-2, font=2, cex=1.2)
+	mtext(paste("Cross-validation results", label), side=3, adj=9.25, padj=-2, font=2, cex=1.2)
 }
 
 plot.xval.CIs <- function(xval.CIs, K, k.range=c(1:K), ylim=NULL, cex=1.5, jitter=0, ...){
