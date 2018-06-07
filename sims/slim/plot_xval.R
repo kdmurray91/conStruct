@@ -10,7 +10,7 @@ if (length(args) < 2) {
     stop(usage)
 }
 
-source("xval_plot_fns.R")
+source("construct_plot_fns.R")
 
 dir <- args[1]
 K <- as.numeric(args[2])
