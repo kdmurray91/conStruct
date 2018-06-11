@@ -126,12 +126,14 @@ def write_info(chrom):
         pop_loc = (pop_lims[0][0] + np.random.random(1)[0] * (pop_lims[0][1] - pop_lims[0][0]),
                     pop_lims[0][0] + np.random.random(1)[0] * (pop_lims[0][1] - pop_lims[0][0]))
         dists = np.sqrt((ind_x - pop_loc[0])**2 + (ind_y - pop_loc[1])**2)
-        pop = list(set(np.argpartition(dists, 2*args.popsize)[:2*args.popsize]) - set(allpops))[:args.popsize]
+        pop = list(set(np.argpartition(dists, args.popsize)[:args.popsize]) - set(allpops))[:args.popsize]
         if len(pop) > 0:
             pops.append(pop)
             pop_locs.append(pop_loc)
             allpops.extend(pop)
             j += 1
+        else:
+            logfile.write("Resampling population location.\n")
     # nodes corresponding to those individuals
     pop_nodes = [[u for j in pop for u in node_inds[j]] for pop in pops]
     allnodes = [u for x in pop_nodes for u in x]
